@@ -1,0 +1,104 @@
+defaults:
+  - _self_
+  # colored logs for more readability
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+
+hydra:
+      run:
+          dir: logs/${model_config.exp_name}/${env_config.env_id}/${scheduler_config.scheduling_strategy}/${now:%Y-%m-%d-%H-%M-%S}
+
+
+####################### General Configs #######################
+
+###################### Env Configs ###########################
+
+env_type: "mani_skill"
+
+env_config:
+    obs_mode: "rgb"
+    control_mode: "pd_ee_delta_pose"
+    render_mode: "rgb_array"
+    sim_backend: "gpu"  # "cpu" # "gpu"
+    reward_mode: "normalized_dense"
+    env_id: "PickCube-v1"
+    # """the id of the environment"""
+    num_envs: 1 # 32
+    # """the number of parallel environments"""
+    num_steps: 50 
+    include_state: False
+    partial_reset: True
+    image_height: 256
+    image_width: 256
+    
+    # """whether to let parallel environments reset upon termination instead of truncation"""
+# =================================================================
+scheduler_config:
+  scheduling_strategy: "internal_only" # "internal_only" octo_reward_based
+  octo_temperature: 10 #10
+  policy_trust_length: 5
+  iteration_to_switch: 50
+  step_to_switch: 15
+####################### Devices Configs #######################
+device: cuda
+# ===================== Logging Configs ========================
+# evaluate: True
+# eval_freq: 20
+# save_train_videos: True
+# save_eval_videos: True
+# save_train_video_freq: 50
+
+####################### Model Configs #######################
+model_type: ppo_rgb
+path_to_loaded_model: null
+# path_to_loaded_model: "/home/piscenco/logs/octo_reward_based_temp10/PickCube-v1/octo_reward_based/2024-11-17-17-19-19/octo_reward_based_temp10/model_ckpt/ckpt_72.pt"
+
+
+# path_to_loaded_model: "/home/piscenco/thesis_octo/outputs/2024-10-29/10-25-24/PickCube_only_octo_v3/final_ckpt.pt"
+#"/home/piscenco/thesis_octo/outputs/2024-10-30/22-14-31/octo_iter_0/final_ckpt.pt"
+
+model_config:
+  exp_name: "default" # internal_continue_from_reward_based internal_only_ppo_baseline
+  model_device: "cuda"
+
+  # ==============================
+
+  # ==============================
+  seed:  13
+  #"""the environment rendering mode"""
+  # ================================
+
+  num_steps: ${env_config.num_steps} # 20  # 50
+  # #""the number of steps to run in each environment per policy rollout"""
+  num_envs: ${env_config.num_envs} # 256 # 128 #64 #4 # 32
+  # #"""the number of parallel environments"""
+  # ================================
+  
+  # """the id of the environment"""
+  include_state: False # For real robots we don't have access to state!!!
+  # """whether to include state information in observations"""
+
+  # num_iterations = self.total_timesteps // self.batch_size
+  total_timesteps: 5_000 # 500_000 #100_000 # 400_000 # 10_000_000 1_000_000 # 1_000 # 1_000_000 # 1_000 # 5_000_000 # 500_000 # 250_000  # 10000000
+  # """total timesteps of the experiments"""
+
+  learning_rate: 3e-4
+
+  # batch_size = self.num_envs * self.num_steps
+  #"""the learning rate of the optimizer"""
+  
+  
+
+  # basically max len of each run
+  #"""whether to let parallel environments reset upon termination instead of truncation"""
+  
+  num_minibatches: 10 # 16 # 16  # 32 # for very gpu cons set to 1
+
+  ############### Actor Critic Configs ################
+  # feature_net_type: CustomNatureCNN # NatureCNNWithSkipConnections # SmallTransformerCNN # ResNetNatureCNN # NatureCNNWithSkipConnections
+  actor_type: BasicActor # SimpleActor  # SimpleActor # BasicActor
+  actor_activation_layer: "ReLU" # "ReLU"
+  critic_type: BasicCritic # BasicCritic # SimpleCritic
+  critic_activation_layer: "ReLU" # "ReLU"
+
+

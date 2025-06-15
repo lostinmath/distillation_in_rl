@@ -1,0 +1,77 @@
+# @package _global_
+defaults:
+  - _self_
+  # colored logs for more readability
+  # - override hydra/job_logging: colorlog
+  # - override hydra/hydra_logging: colorlog
+
+
+####################### General Configs #######################
+train: True
+eval: True
+display_sample: True
+
+
+###################### Env Configs ###########################
+
+env_type: "mani_skill"
+
+env_config:
+    obs_mode: "rgb"
+
+####################### Devices Configs #######################
+device: cuda
+
+####################### Model Configs #######################
+model_type: ppo_rgb
+path_to_loaded_model: null
+
+model_config:
+  # ==============================
+  use_external_policy: False # True
+  probability_of_external_action: 0
+
+  # ==============================
+  exp_name: "PickCube_Resnet_Rendered_001"  # PickCube_no_ext_pol_10M "PickCube_no_ext_pol" # "debug_experiment" # this will be the folder name for logs for this subexperiment
+  seed:  1
+  # """whether to capture videos of the agent performances (check out `videos` folder)"""
+  save_model: True
+  #"""whether to save model into the `runs/{run_name}` folder"""
+  evaluate: False
+  #"""if toggled, only runs evaluation with the given model checkpoint and saves the evaluation trajectories"""
+
+  render_mode: "all"
+  #"""the environment rendering mode"""
+
+  # Algorithm specific arguments
+  env_id:  "PickCube-v1"  #"PlugCharger-v1" # "PickCube-v1" "StackCube-v1" PokeCube-v1 "ArchitecTHOR_SceneManipulation-v1"
+  # """the id of the environment"""
+  include_state: False # For real robots we don't have access to state!!!
+  # """whether to include state information in observations"""
+
+  # num_iterations = self.total_timesteps // self.batch_size
+  total_timesteps: 5_000_000 # 10_000_000 1_000_000 # 1_000 # 1_000_000 # 1_000 # 5_000_000 # 500_000 # 250_000  # 10000000
+  # """total timesteps of the experiments"""
+
+  learning_rate: 3e-4
+
+  # batch_size = self.num_envs * self.num_steps
+  #"""the learning rate of the optimizer"""
+  num_envs: 16 #256 # 128 #64 #4 # 32
+  #"""the number of parallel environments"""
+  partial_reset: True
+
+  # basically max len of each run
+  #"""whether to let parallel environments reset upon termination instead of truncation"""
+  num_steps: 500 # 20  # 50
+  #""the number of steps to run in each environment per policy rollout"""
+  # num_eval_steps: 50
+
+  num_minibatches: 64 # 16 # 16  # 32 # for very gpu cons set to 1
+
+  ############### Actor Critic Configs ################
+  feature_net_type: CustomNatureCNN # NatureCNNWithSkipConnections # SmallTransformerCNN # ResNetNatureCNN # NatureCNNWithSkipConnections
+  actor_type: SimpleActor # SimpleActor  # SimpleActor # BasicActor
+  actor_activation_layer: "ReLU" # "ReLU"
+  critic_type: SimpleCritic # BasicCritic # SimpleCritic
+  critic_activation_layer: "ReLU" # "ReLU"

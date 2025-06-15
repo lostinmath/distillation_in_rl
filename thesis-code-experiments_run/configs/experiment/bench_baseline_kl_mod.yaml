@@ -1,0 +1,47 @@
+# @package _global_
+env_type: mani_skill
+env_config:
+  obs_mode: rgb
+  control_mode: pd_ee_delta_pose
+  render_mode: rgb_array
+  sim_backend: gpu
+  reward_mode: normalized_dense
+  env_id: PushCube-v1
+  num_envs: 32
+  num_steps: 50
+  include_state: false
+  partial_reset: true
+  image_height: 256
+  image_width: 256
+  use_render_camera_as_input: True
+
+scheduler_config:
+  scheduling_strategy: internal_only
+
+device: cuda
+model_type: ppo_rgb
+path_to_loaded_model: null
+
+model_config:
+  exp_name: 089_experiment_baseline_vary_kl
+  model_device: cuda
+  seed: 1729 # 26, 1729, 777
+  num_steps: ${env_config.num_steps}
+  num_envs: ${env_config.num_envs}
+  include_state: false
+  total_timesteps: 200_000
+  learning_rate: 0.0003
+  num_minibatches: 10
+  actor_type: BasicActor
+  actor_activation_layer: ReLU
+  critic_type: BasicCritic
+  critic_activation_layer: ReLU
+  clip_coef: 0.2
+  target_kl: 50_000
+
+evaluate: false
+eval_freq: 240000
+save_train_videos: true
+save_eval_videos: false
+save_train_video_freq: 1_000_000
+ckpt_save_frequency: 100_000

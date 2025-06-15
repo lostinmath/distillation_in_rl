@@ -1,0 +1,23 @@
+defaults:
+  - _self_
+  # colored logs for more readability
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+
+####################### General Configs #######################
+train: True
+eval: True
+display_sample: True
+
+####################### Model Configs #######################
+model_type: ppo_stable_baselines3
+
+model_config:
+  policy_type: "CNNPolicy"
+###################### Env Configs ###########################
+
+env_type: "mani_skill"
+env_name: "LiftCube-v0"
+
+####################### Devices Configs #######################
+device: cuda

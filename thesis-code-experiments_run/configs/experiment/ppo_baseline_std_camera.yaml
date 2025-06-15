@@ -1,0 +1,56 @@
+# @package _global_
+defaults:
+  - _self_
+  # colored logs for more readability
+  # - override hydra/job_logging: colorlog
+  # - override hydra/hydra_logging: colorlog
+
+# hydra:
+#       run:
+#           dir: logs/${model_config.exp_name}/${env_config.env_id}/${scheduler_config.scheduling_strategy}/${now:%Y-%m-%d-%H-%M-%S}
+          
+env_type: mani_skill
+env_config:
+  obs_mode: rgb
+  control_mode: pd_ee_delta_pose
+  render_mode: rgb_array
+  sim_backend: gpu
+  reward_mode: dense
+  env_id: PickCube-v1
+  num_envs: 32
+  num_steps: 50
+  include_state: false
+  partial_reset: true
+  image_height: 256
+  image_width: 256
+  use_render_camera_as_input: False # !!!!
+
+scheduler_config:
+  scheduling_strategy: internal_only
+
+device: cuda
+
+evaluate: true
+eval_freq: 500_000
+save_train_videos: false
+save_eval_videos: false
+ckpt_save_frequency: 500_000
+
+model_type: ppo_rgb
+path_to_loaded_model: null
+# "logs/ppo_baseline_standard_camera_6M/PickCube-v1/internal_only/2024-12-02-23-06-02/ppo_baseline_standard_camera_6M/final_ckpt.pt"
+model_config:
+  exp_name: ppo_baseline_standard_camera_20M
+  model_device: cuda
+  seed: 13
+  num_steps: ${env_config.num_steps}
+  
+  num_envs: ${env_config.num_envs}
+  include_state: false
+  total_timesteps: 20_000_000
+  learning_rate: 0.0003
+  num_minibatches: 10
+  actor_type: BasicActor
+  actor_activation_layer: ReLU
+  critic_type: BasicCritic
+  critic_activation_layer: ReLU

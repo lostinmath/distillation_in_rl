@@ -1,0 +1,83 @@
+jax_env: False
+
+seed: 0
+algo: sac
+verbose: 1
+demo_type: "rl"
+config_type: "walltime_efficient"
+# Environment configuration
+env:
+  env_id: "PushCube-v1"
+  max_episode_steps: 50
+  num_envs: 8
+  env_type: "gym:cpu"
+  env_kwargs:
+    control_mode: "pd_joint_delta_pos"
+    render_mode: "rgb_array"
+    reward_mode: "sparse"
+eval_env:
+  num_envs: 2
+  max_episode_steps: 50
+
+sac:
+  num_seed_steps: 500 # 5_000
+  seed_with_policy: False
+  replay_buffer_capacity: 1_000_000
+  batch_size: 256
+  steps_per_env: 4
+  grad_updates_per_step: 16
+  actor_update_freq: 1
+
+  num_qs: 2
+  num_min_qs: 2
+
+  discount: 0.9
+  tau: 0.005
+  backup_entropy: False
+
+  eval_freq: 50_000
+  eval_steps: 250
+
+  log_freq: 1000
+  save_freq: 50_000
+
+  learnable_temp: True
+  initial_temperature: 1.0
+  
+network:
+  actor:
+    type: "mlp"
+    arch_cfg:
+      features: [256, 256, 256]
+      output_activation: "relu"
+  critic:
+    type: "mlp"
+    arch_cfg:
+      features: [256, 256, 256]
+      output_activation: "relu"
+      use_layer_norm: True
+
+train:
+  actor_lr: 3e-4
+  critic_lr: 3e-4
+  steps: 1_000
+  dataset_path: "~/.maniskill/demos/PushCube-v1/rl/trajectory.none.pd_ee_delta_pos.physx_cuda.h5"
+  shuffle_demos: True
+  num_demos: 1000
+
+  data_action_scale: null
+
+logger:
+  tensorboard: True
+  wandb: False
+  exp_name: "rlpd-PushCube-v1-state-${demos}_rl_demos-${seed}-walltime_efficient"
+  workspace: "exps"
+  project_name: "ManiSkill"
+  wandb_cfg:
+    group: "RLPD"
+
+
+#   seed=${seed} train.num_demos=${demos} train.steps=1_000 \
+#   env.env_id=${env_id} \
+#   train.dataset_path="~/.maniskill/demos/${env_id}/rl/trajectory.state.pd_joint_delta_pos.cpu.h5" \
+#   demo_type="rl" config_type="walltime_efficient"
