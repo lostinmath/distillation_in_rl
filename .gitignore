@@ -18,8 +18,11 @@ outputs/*
 prev_code/demos/*
 demos/*
 
-
+notes*
+thesis_text.pdf
+distill_env
 octoplus/runs/*
+C*
 
 # notebooks to be ignored
 # *.ipynb
