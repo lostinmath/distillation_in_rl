@@ -1,0 +1,10 @@
+# @package tracker
+
+backends:
+  - tensorboard
+tensorboard:
+  enabled: true
+console:
+  enabled: true
+csv:
+  enabled: true

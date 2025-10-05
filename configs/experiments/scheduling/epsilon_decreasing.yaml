@@ -1,0 +1,25 @@
+# Linearly decreasing epsilon scheduling
+
+experiment:
+  name: "epsilon_decreasing_scheduling"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+
+scheduler:
+  strategy: "epsilon_decreasing"
+  trust_length: 5
+  epsilon: 0.5  # Starting epsilon
+  decrease_until_global_step: 50000  # Linear decay until this step
+
+teacher:
+  type: "optimal"
+
+tracker:
+  backends: ["tensorboard", "csv"]

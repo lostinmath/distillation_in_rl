@@ -1,35 +1,27 @@
+# @package _global_
+
 defaults:
   - _self_
-  # colored logs for more readability
-  - override hydra/job_logging: colorlog
-  - override hydra/hydra_logging: colorlog
-  - override hydra/sweeper: optuna
-  
+  - algorithm: ppo
+  - environment: cartpole
+  - scheduler: student_only
+  - teacher: optimal
+  - tracker: tensorboard
+  - hydra: default
 
-hydra:
-      run:
-          dir: logs/${model_config.exp_name}/${now:%Y-%m-%d-%H-%M-%S}
+experiment:
+  name: ${scheduler.name}_${environment.name}
+  seed: 42
+  device: cuda
+  num_seeds: 3
 
+training:
+  total_timesteps: 100000
+  eval_freq: 10000
+  checkpoint_freq: 50000
+  video_freq: 0
 
-####################### General Configs #######################
-
-###################### Env Configs ###########################
-
-env_type: "mani_skill"
-
-env_config:
-    obs_mode: "rgb"
-    control_mode: "pd_ee_delta_pose"
-    render_mode: "rgb_array"
-    sim_backend: "gpu"  # "cpu" # "gpu"
-    reward_mode: "dense"
-    env_id: "PickCube-v1"
-    # """the id of the environment"""
-    num_envs: 1 # 32
-    # """the number of parallel environments"""
-    num_steps: 50
-    include_state: False
-    partial_reset: True
-    image_height: 256
-    image_width: 256
-    use_render_camera_as_input: False
+paths:
+  log_dir: logs/${experiment.name}
+  checkpoint_dir: ${paths.log_dir}/checkpoints
+  video_dir: ${paths.log_dir}/videos

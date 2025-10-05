@@ -1,0 +1,4 @@
+# @package teacher
+
+name: random
+_target_: distillation_rl.teachers.random.RandomPolicy

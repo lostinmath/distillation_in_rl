@@ -1,0 +1,22 @@
+# Alternate between teacher and student each iteration
+
+experiment:
+  name: "interchangeably_scheduling"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+
+scheduler:
+  strategy: "alternating"  # Also known as internal_octo_interchangeably
+
+teacher:
+  type: "optimal"
+
+tracker:
+  backends: ["tensorboard", "csv"]

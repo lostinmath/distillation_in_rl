@@ -1,0 +1,24 @@
+# Teacher bootstrap then switch to student
+
+experiment:
+  name: "teacher_then_student_scheduling"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+
+scheduler:
+  strategy: "teacher_then_student"
+  iteration_to_switch: 50  # Switch at iteration 50
+  step_to_switch: 10  # Switch after 10 steps in the iteration
+
+teacher:
+  type: "optimal"
+
+tracker:
+  backends: ["tensorboard", "csv"]

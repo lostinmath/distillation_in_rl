@@ -1,0 +1,24 @@
+# Fixed epsilon probability switching
+
+experiment:
+  name: "epsilon_scheduling"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+
+scheduler:
+  strategy: "epsilon"
+  trust_length: 5
+  epsilon: 0.3  # 30% chance of switching
+
+teacher:
+  type: "optimal"
+
+tracker:
+  backends: ["tensorboard", "csv"]

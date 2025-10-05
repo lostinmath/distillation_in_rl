@@ -1,0 +1,22 @@
+# @package algorithm
+
+name: ppo
+_target_: distillation_rl.algorithms.ppo.PPO
+
+learning_rate: 3e-4
+n_steps: 2048
+batch_size: 64
+n_epochs: 10
+gamma: 0.99
+gae_lambda: 0.95
+clip_range: 0.2
+clip_range_vf: null
+normalize_advantage: true
+ent_coef: 0.0
+vf_coef: 0.5
+max_grad_norm: 0.5
+
+network:
+  _target_: distillation_rl.networks.mlp.MLPNetwork
+  hidden_sizes: [64, 64]
+  activation: tanh

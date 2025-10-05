@@ -1,0 +1,5 @@
+# @package scheduler
+
+name: epsilon
+_target_: distillation_rl.schedulers.epsilon.EpsilonScheduler
+epsilon: 0.5

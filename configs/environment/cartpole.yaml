@@ -1,0 +1,8 @@
+# @package environment
+
+name: cartpole
+env_id: CartPole-v1
+num_envs: 4
+max_episode_steps: 500
+normalize_obs: false
+normalize_reward: false

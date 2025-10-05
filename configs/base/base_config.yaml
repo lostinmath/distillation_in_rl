@@ -1,0 +1,46 @@
+# Base configuration for RL distillation experiments
+
+experiment:
+  name: "cartpole_base"
+  seed: 42
+  device: "cuda"  # or "cpu"
+  log_dir: "logs"
+  capture_video: false
+  save_freq: 100  # Save checkpoint every N iterations
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128  # Steps per env per iteration
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+  batch_size: 256
+  n_epochs: 4
+
+ppo:
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_coef: 0.2
+  vf_coef: 0.5
+  ent_coef: 0.01
+  max_grad_norm: 0.5
+
+network:
+  hidden_size: 64
+  n_hidden_layers: 2
+  activation: "tanh"  # or "relu"
+
+scheduler:
+  strategy: "student_only"  # baseline PPO
+  trust_length: 5
+  # Additional params for specific strategies:
+  # epsilon: 0.1  # for epsilon strategy
+  # decrease_until_global_step: 500000  # for epsilon_decreasing
+  # iteration_to_switch: 50  # for teacher_then_student
+  # step_to_switch: 15  # for teacher_then_student
+
+teacher:
+  type: null  # null for student_only, or "random", "optimal", "pretrained"
+  # checkpoint_path: "path/to/model.pt"  # for pretrained teacher

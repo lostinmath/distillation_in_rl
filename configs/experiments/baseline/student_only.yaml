@@ -1,0 +1,22 @@
+# Pure student learning (PPO baseline)
+
+experiment:
+  name: "student_only_baseline"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+
+scheduler:
+  strategy: "student_only"
+
+teacher:
+  type: null  # No teacher
+
+tracker:
+  backends: ["tensorboard", "csv"]

@@ -1,0 +1,101 @@
+# Configurations for testing all scheduling strategies on CartPole
+
+# Base configuration shared by all experiments
+defaults:
+  environment:
+    env_id: "CartPole-v1"
+    num_envs: 8
+    num_steps: 128
+
+  training:
+    num_iterations: 300
+    learning_rate: 2.5e-4
+    batch_size: 256
+    n_epochs: 4
+
+  ppo:
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_coef: 0.2
+    vf_coef: 0.5
+    ent_coef: 0.01
+    max_grad_norm: 0.5
+
+  network:
+    hidden_size: 64
+    n_hidden_layers: 2
+    activation: "tanh"
+
+# Different scheduling strategies to test
+experiments:
+
+  student_only:
+    experiment:
+      name: "cartpole_student_only"
+      seed: 42
+    scheduler:
+      strategy: "student_only"
+    teacher:
+      type: null
+
+  teacher_only:
+    experiment:
+      name: "cartpole_teacher_only"
+      seed: 42
+    scheduler:
+      strategy: "teacher_only"
+    teacher:
+      type: "optimal"
+
+  reward_based:
+    experiment:
+      name: "cartpole_reward_based"
+      seed: 42
+    scheduler:
+      strategy: "reward_based"
+      trust_length: 5
+      policy_trust_threshold: 0.6
+    teacher:
+      type: "optimal"
+
+  epsilon:
+    experiment:
+      name: "cartpole_epsilon"
+      seed: 42
+    scheduler:
+      strategy: "epsilon"
+      epsilon: 0.3
+      trust_length: 5
+    teacher:
+      type: "optimal"
+
+  epsilon_decreasing:
+    experiment:
+      name: "cartpole_epsilon_decreasing"
+      seed: 42
+    scheduler:
+      strategy: "epsilon_decreasing"
+      trust_length: 5
+      decrease_until_global_step: 100000
+    teacher:
+      type: "optimal"
+
+  alternating:
+    experiment:
+      name: "cartpole_alternating"
+      seed: 42
+    scheduler:
+      strategy: "alternating"
+    teacher:
+      type: "optimal"
+
+  teacher_then_student:
+    experiment:
+      name: "cartpole_teacher_then_student"
+      seed: 42
+    scheduler:
+      strategy: "teacher_then_student"
+      iteration_to_switch: 50
+      step_to_switch: 64
+    teacher:
+      type: "optimal"

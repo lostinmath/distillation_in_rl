@@ -1,0 +1,4 @@
+# @package scheduler
+
+name: teacher_only
+_target_: distillation_rl.schedulers.simple.TeacherOnlyScheduler

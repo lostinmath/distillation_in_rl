@@ -1,0 +1,6 @@
+# @package scheduler
+
+name: reward_based
+_target_: distillation_rl.schedulers.reward_based.RewardBasedScheduler
+trust_period: 5
+initial_policy: teacher

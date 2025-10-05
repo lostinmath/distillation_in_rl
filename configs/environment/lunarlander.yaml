@@ -1,0 +1,8 @@
+# @package environment
+
+name: lunarlander
+env_id: LunarLander-v2
+num_envs: 4
+max_episode_steps: 1000
+normalize_obs: false
+normalize_reward: false

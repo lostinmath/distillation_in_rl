@@ -1,0 +1,46 @@
+# Default configuration for distillation RL experiments
+
+experiment:
+  name: null  # Will be auto-generated if not provided
+  seed: 42
+  device: "cuda"
+  log_dir: "logs"
+  capture_video: false
+  save_freq: 100
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+  batch_size: 256
+  n_epochs: 4
+
+ppo:
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_coef: 0.2
+  vf_coef: 0.5
+  ent_coef: 0.01
+  max_grad_norm: 0.5
+
+network:
+  hidden_size: 64
+  n_hidden_layers: 2
+  activation: "tanh"
+
+scheduler:
+  strategy: "student_only"
+  trust_length: 5
+
+teacher:
+  type: null
+
+tracker:
+  backends: ["tensorboard", "console", "csv"]
+  log_frequency: 10
+  log_videos: false
+  log_models: true

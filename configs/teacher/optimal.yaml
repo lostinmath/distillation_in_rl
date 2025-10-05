@@ -1,0 +1,4 @@
+# @package teacher
+
+name: optimal
+_target_: distillation_rl.teachers.optimal.OptimalPolicy

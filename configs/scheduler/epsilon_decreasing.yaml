@@ -1,0 +1,7 @@
+# @package scheduler
+
+name: epsilon_decreasing
+_target_: distillation_rl.schedulers.epsilon.EpsilonDecreasingScheduler
+initial_epsilon: 0.9
+final_epsilon: 0.1
+decay_steps: 50000

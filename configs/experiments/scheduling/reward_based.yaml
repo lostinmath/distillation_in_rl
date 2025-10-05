@@ -1,0 +1,26 @@
+# Reward-based adaptive scheduling (MAIN CONTRIBUTION)
+
+experiment:
+  name: "reward_based_scheduling"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+  num_steps: 128
+
+training:
+  num_iterations: 500
+  learning_rate: 2.5e-4
+
+scheduler:
+  strategy: "reward_based"
+  trust_length: 5
+  policy_trust_threshold: 0.6
+  internal_policy_warmup_length: 5
+
+teacher:
+  type: "optimal"
+
+tracker:
+  backends: ["tensorboard", "csv"]
+  log_frequency: 10
