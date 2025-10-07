@@ -1,0 +1,21 @@
+# Configuration for dm_control cheetah_run environment
+
+_target_: adaptive_rl.envs.dm_control_wrapper.create_dm_control_env
+
+# Environment settings
+env_name: "cheetah_run"
+flatten_obs: true
+
+# Environment parameters
+max_episode_steps: 1000
+reward_threshold: null  # No specific threshold for continuous control
+
+# For compatibility with existing pipeline
+env_type: "dm_control"
+action_type: "continuous"
+observation_type: "vector"
+
+# Wrapper settings
+normalize_obs: false
+normalize_rewards: false
+clip_actions: true

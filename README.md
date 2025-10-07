@@ -1,150 +1,202 @@
+# Adaptive Teacher-Student Scheduling for Reinforcement Learning
 
-# Distillation-RL: Teacher-Guided Reinforcement Learning
-
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+Python 3.10+ | Code style: black | Linting: ruff
 
 ## Overview
 
 This project implements adaptive scheduling strategies for teacher-guided reinforcement learning. The core research question: **When should an RL agent follow teacher guidance versus explore independently?**
 
-### Key Innovation
+### Research Contribution
 
-**Reward-based scheduling**: An adaptive strategy that monitors performance trends and switches between teacher and student policies when performance degrades, improving sample efficiency in RL training.
+The main contribution is a reward-based scheduling strategy that adaptively determines when an RL agent should follow teacher guidance versus explore independently. The method monitors performance trends and switches policies when reward decreases are detected, leading to improved sample efficiency compared to fixed scheduling approaches.
 
 ## Installation
 
-### Using uv (Recommended)
+### Prerequisites
+
+- Python 3.10+
+- Git
+- CUDA-capable GPU (recommended)
+
+### Setup
 
 ```bash
-# Install uv if you haven't already
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# Install pixi package manager
+curl -fsSL https://pixi.sh/install.sh | bash
 
-# Clone the repository
-git clone https://github.com/lostinmath/distillation_in_rl.git
+# Clone repository
+git clone https://github.com/username/distillation_in_rl.git
 cd distillation_in_rl
 
-# Create virtual environment and install
-uv venv --python 3.10
-uv pip install -e .
+# Install dependencies
+pixi install
 
-# Install with all optional dependencies
-uv pip install -e ".[all]"
-```
-
-### Using pip
-
-```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install package
-pip install -e .
-
-# Install with all optional dependencies
-pip install -e ".[all]"
+# Verify installation
+pixi run python -c "import adaptive_rl; print('Installation successful')"
 ```
 
 ## Quick Start
 
-### Test Installation
+### Running Experiments
 
 ```bash
-# Test that all imports work
-uv run distillation-test
+# Run baseline comparison study
+./scripts/run_baseline_comparison.sh
+
+# Run quick integration test
+./scripts/run_quick_test.sh
+
+# Run specific experiment group
+python train_modern.py --config-path configs/experiments/01_baseline_study --config-name 01_001_student_only_cartpole
 ```
 
-### Train with Reward-Based Scheduling (Main Contribution)
+### Training Individual Experiments
 
 ```bash
-# Train CartPole with reward-based scheduling
-uv run distillation-train --config distillation_rl/configs/cartpole_reward_based.yaml
+# Train with reward-based scheduling (main contribution)
+pixi run python train_modern.py \
+    environment=cartpole \
+    scheduler=reward_based \
+    teacher=optimal
 
-# Or specify parameters directly
-uv run distillation-train \
-    --env CartPole-v1 \
-    --strategy reward_based \
-    --teacher optimal \
-    --iterations 300
-```
+# Train baseline (student only)
+pixi run python train_modern.py \
+    environment=cartpole \
+    scheduler=student_only
 
-### Compare All Scheduling Strategies
-
-```bash
-# Run baseline (pure PPO, no teacher)
-uv run distillation-train --strategy student_only --env CartPole-v1
-
-# Run with teacher only (pure imitation)
-uv run distillation-train --strategy teacher_only --teacher optimal --env CartPole-v1
-
-# Run with epsilon scheduling
-uv run distillation-train --strategy epsilon --epsilon 0.3 --teacher optimal --env CartPole-v1
-
-# Run with decreasing epsilon
-uv run distillation-train --strategy epsilon_decreasing --teacher optimal --env CartPole-v1
-
-# Run with reward-based switching (main contribution)
-uv run distillation-train --strategy reward_based --teacher optimal --env CartPole-v1
+# Train with different environments
+pixi run python train_modern.py \
+    environment=lunarlander \
+    scheduler=reward_based \
+    teacher=optimal
 ```
 
 ## Scheduling Strategies
 
-### 1. **Reward-Based (Main Contribution)**
-Monitors reward trends and switches policies adaptively:
-- Tracks performance over a trust period
-- Switches when `current_reward < previous_reward`
-- Improves sample efficiency significantly
+This project implements seven scheduling strategies for combining teacher and student policies:
 
-### 2. **Epsilon-Based**
-- `epsilon`: Fixed probability of using teacher
-- `epsilon_decreasing`: Linearly decreasing probability
+### 1. Reward-Based (Main Contribution)
+Adaptive switching based on performance trend monitoring:
+- Monitors reward over a trust period (default: 5 steps)
+- Switches when current reward is less than previous reward
+- Dynamic adaptation based on learning progress
+- Demonstrates improved sample efficiency compared to fixed schedules
 
-### 3. **Simple Baselines**
-- `student_only`: Pure RL without teacher
-- `teacher_only`: Pure imitation learning
-- `alternating`: Switch every iteration
-- `teacher_then_student`: Bootstrap then switch
+### 2. Epsilon Strategies
+- **epsilon**: Fixed probability scheduling (e.g., 30% teacher, 70% student)
+- **epsilon_decreasing**: Linear decay from 100% teacher to 0% teacher usage
 
-## Configuration
+### 3. Structured Schedules
+- **interchangeably**: Alternates between teacher and student each iteration
+- **teacher_then_student**: Bootstrap phase with teacher, then switch to student
 
-Experiments are configured via YAML files in `distillation_rl/configs/`:
-
-```yaml
-# Example: cartpole_reward_based.yaml
-experiment:
-  name: "cartpole_reward_based"
-  seed: 42
-
-environment:
-  env_id: "CartPole-v1"
-  num_envs: 8
-
-scheduler:
-  strategy: "reward_based"
-  trust_length: 5  # Steps before evaluating switch
-
-teacher:
-  type: "optimal"  # Hand-coded optimal policy
-```
+### 4. Baseline Methods
+- **student_only**: Pure reinforcement learning (PPO) without teacher guidance
+- **teacher_only**: Pure imitation learning using only teacher actions
 
 ## Project Structure
 
 ```
-distillation_rl/
-├── schedulers/       # Scheduling strategies
-│   ├── reward_based.py  # Main contribution
-│   ├── epsilon.py       # Epsilon-based strategies
-│   └── simple.py        # Baseline strategies
-├── teachers/         # Teacher policies
-│   ├── optimal.py       # Hand-coded optimal
-│   ├── random.py        # Random baseline
-│   └── pretrained.py    # Load saved models
-├── core/             # Core algorithms
-│   └── ppo.py          # PPO implementation
-├── configs/          # Experiment configurations
-└── utils/            # Utilities
+distillation_in_rl/
+├── src/adaptive_rl/               # Main package
+│   ├── schedulers/                # Policy scheduling strategies
+│   │   ├── reward_based.py        # Main contribution
+│   │   ├── epsilon.py             # Epsilon-based strategies
+│   │   └── simple.py              # Baseline strategies
+│   ├── teachers/                  # Teacher policies
+│   │   ├── optimal.py             # Hand-coded optimal policies
+│   │   ├── random.py              # Random baseline
+│   │   └── pretrained.py          # Saved model teachers
+│   ├── envs/                      # Environment wrappers
+│   ├── utils/                     # Utilities (logging, etc.)
+│   └── validation/                # Statistical validation pipeline
+├── configs/                       # Experiment configurations
+│   ├── experiments/               # Numbered experiment series
+│   │   ├── 01_baseline_study/     # Baseline performance bounds
+│   │   ├── 02_scheduling_comparison/ # Main strategy comparison
+│   │   ├── 03_ablation_study/     # Component analysis
+│   │   └── 04_domain_generalization/ # Cross-environment validation
+│   ├── algorithm/                 # PPO hyperparameters
+│   ├── environment/               # CartPole, LunarLander configs
+│   ├── scheduler/                 # All scheduling strategies
+│   └── teacher/                   # Teacher configurations
+├── scripts/                       # Experiment runner scripts
+│   ├── run_baseline_comparison.sh # Strategy comparison
+│   ├── run_quick_test.sh          # Fast verification
+│   └── test_all_strategies.sh     # Comprehensive testing
+├── docs/                          # Documentation
+└── results/                       # Experiment outputs (auto-generated)
+```
+
+## Configuration System
+
+Experiments use **Hydra** for configuration management:
+
+```yaml
+# configs/scheduler/reward_based.yaml
+name: reward_based
+trust_length: 5                    # Steps before evaluating switch
+policy_trust_threshold: 0.6        # Confidence threshold
+```
+
+```yaml
+# configs/experiments/02_scheduling_comparison/02_001_reward_based_cartpole.yaml
+defaults:
+  - base_experiment
+  - environment: cartpole
+  - algorithm: ppo
+  - scheduler: reward_based
+  - teacher: optimal
+
+experiment_id: "02_001"
+experiment_name: "02_001_reward_based_cartpole"
+experiment_group: "02_scheduling_comparison"
+
+seed: 42
+total_timesteps: 50000
+eval_frequency: 5000
+```
+
+## Expected Results
+
+### Performance Benchmarks (CartPole-v1)
+- **student_only**: ~200 episodes to solve (baseline)
+- **teacher_only**: Immediate success (upper bound performance)
+- **epsilon**: ~150 episodes (fixed probability baseline)
+- **reward_based**: ~100-120 episodes (main contribution)
+
+### Key Metrics
+- Sample efficiency improvement over baseline methods
+- Reduced learning variance across different random seeds
+- Adaptive switching behavior based on performance trends
+
+## Reproducibility & Git Tracking
+
+All experiments automatically track git information for reproducibility:
+
+```bash
+# Each experiment creates git_info.txt
+results/baseline_comparison_20241005_1420/git_info.txt
+```
+
+```
+Git Commit: a1b2c3d4e5f6789...
+Git Branch: main
+Timestamp: 2024-10-05 14:20:33
+Command: ./scripts/run_baseline_comparison.sh
+```
+
+## Analysis & Visualization
+
+```bash
+# Generate comparison plots
+pixi run python -m adaptive_rl.analysis.compare_strategies results/baseline_comparison_*/
+
+# Run statistical validation
+pixi run python examples/run_statistical_validation.py
+
+# Create publication figures
+pixi run python notebooks/plots.ipynb
 ```
 
 ## Development
@@ -152,51 +204,73 @@ distillation_rl/
 ### Code Quality
 
 ```bash
-# Format code
-uv run black distillation_rl/
-uv run ruff check distillation_rl/ --fix
+# Format and lint
+pixi run black src/
+pixi run ruff check src/ --fix
 
 # Type checking
-uv run mypy distillation_rl/
+pixi run mypy src/adaptive_rl
 
 # Run tests
-uv run pytest
+pixi run python tests/test_integration.py
 
-# Run all checks
-uv run pre-commit run --all-files
+# Quality checks
+pixi run lint && pixi run format && pixi run type-check
 ```
 
-### Adding New Scheduling Strategies
+### Adding New Components
 
-1. Create new scheduler in `distillation_rl/schedulers/`
-2. Inherit from `PolicyScheduler` base class
-3. Implement `choose_policy_type()` method
-4. Register in `SCHEDULERS` dictionary
+#### New Scheduling Strategy
+```python
+# src/adaptive_rl/schedulers/my_strategy.py
+from .base import PolicyScheduler
 
-### Adding New Teachers
+class MyScheduler(PolicyScheduler):
+    def choose_policy_type(self, iteration, global_step, steps_since_reset, prev_reward):
+        # Your scheduling logic here
+        return ["student" if condition else "teacher" for _ in range(self.num_envs)]
+```
 
-1. Create new teacher in `distillation_rl/teachers/`
-2. Inherit from `TeacherPolicy` base class
-3. Implement `act()` method
-4. Register in `TEACHER_TYPES` dictionary
+#### New Teacher Policy
+```python
+# src/adaptive_rl/teachers/my_teacher.py
+from .base import TeacherPolicy
 
-## Results
+class MyTeacher(TeacherPolicy):
+    def act(self, obs):
+        # Your teacher logic here
+        return actions
+```
 
-Expected performance on CartPole-v1:
-- **student_only**: ~200 episodes to solve
-- **teacher_only**: Immediate success (optimal teacher)
-- **reward_based**: 50-100 episodes (2-4x improvement)
+## Scientific Validation
+
+This implementation preserves the **exact scheduling logic** from the original thesis research:
+
+```python
+# Core reward-based switching logic (preserved exactly)
+if prev_reward[i] < self.prev_prev_reward[i] and steps_taken_on_policy[i] >= trust_length:
+    # Switch policy
+    current_policy = "teacher" if current_policy == "student" else "student"
+```
+
+## Hardware Requirements
+
+- **Minimum**: CPU, 4GB RAM, 5GB disk space
+- **Recommended**: CUDA GPU, 16GB RAM, 20GB disk space
+- **Runtime estimates**:
+  - Quick test: 5 minutes
+  - Single strategy: 30-60 minutes
+  - Complete baseline study: 2-4 hours
 
 ## Citation
-
-If you use this code in your research, please cite:
 
 ```bibtex
 @mastersthesis{piscenco2024distillation,
   title={Adaptive Scheduling Strategies for Teacher-Guided Reinforcement Learning},
   author={Piscenco, Margarita},
   year={2024},
-  school={Your University}
+  school={University},
+  note={Code available at: https://github.com/username/distillation_in_rl}
 }
 ```
 
@@ -204,8 +278,12 @@ If you use this code in your research, please cite:
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## Contact
 
-- Based on research conducted for master's thesis
-- Uses Gymnasium environments for benchmarking
-- PPO implementation adapted from CleanRL
+- **Research Questions**: Issues on GitHub
+- **Collaboration**: Pull requests welcome
+- **Reproducibility Issues**: Check `git_info.txt` in results
+
+---
+
+**Research Contribution**: The reward-based scheduling strategy demonstrates improved sample efficiency by adaptively switching between teacher and student policies based on performance trend monitoring, providing a principled approach to teacher-student policy mixing in reinforcement learning.

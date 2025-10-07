@@ -7,7 +7,7 @@ the alternative policy after a trust period.
 
 import torch
 
-from adaptive_rl.schedulers.base import PolicyScheduler
+from src.adaptive_rl.schedulers.base import PolicyScheduler
 
 
 class RewardBasedScheduler(PolicyScheduler):

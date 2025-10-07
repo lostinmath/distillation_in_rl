@@ -6,16 +6,16 @@
 set -e
 
 echo "=== Running Baseline Comparison Study ==="
-echo "Comparing all 7 scheduling strategies on CartPole and LunarLander"
+echo "Comparing all 7 scheduling strategies on CartPole and Acrobot"
 
 SEEDS=(42 123 456)
-ENVIRONMENTS=("cartpole" "lunarlander")
+ENVIRONMENTS=("cartpole" "acrobot")
 STRATEGIES=(
     "student_only"
     "teacher_only"
     "epsilon"
     "epsilon_decreasing"
-    "interchangeably"
+    "alternating"
     "teacher_then_student"
     "reward_based"
 )

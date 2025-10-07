@@ -1,0 +1,20 @@
+# Configuration for MuJoCo HalfCheetah environment
+
+_target_: adaptive_rl.envs.mujoco_wrapper.create_mujoco_env
+
+# Environment settings
+env_name: "halfcheetah"
+render_mode: null
+
+# Environment parameters
+max_episode_steps: 1000
+
+# For compatibility with existing pipeline
+env_type: "mujoco"
+action_type: "continuous"
+observation_type: "vector"
+
+# Wrapper settings
+normalize_obs: false
+normalize_rewards: false
+clip_actions: true

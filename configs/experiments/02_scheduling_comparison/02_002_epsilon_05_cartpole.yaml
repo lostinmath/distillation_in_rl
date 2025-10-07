@@ -1,0 +1,42 @@
+# @package _global_
+# Experiment 02.002: Fixed epsilon scheduling baseline - CartPole
+# Group: 02 (Scheduling Comparison), Experiment: 002, Environment: CartPole
+
+defaults:
+  - base_experiment
+  - environment: cartpole
+  - algorithm: ppo
+  - scheduler: epsilon
+  - teacher: optimal
+  - tracker: tensorboard
+
+experiment_id: "02_002"
+experiment_name: "02_002_epsilon_05_cartpole"
+experiment_group: "02_scheduling_comparison"
+experiment_description: "Fixed 50% teacher usage baseline for comparison with adaptive methods"
+
+seed: 42
+total_timesteps: 50000
+eval_frequency: 5000
+
+# Fixed epsilon parameters
+scheduler:
+  epsilon: 0.5  # 50% teacher usage
+
+# Same base hyperparameters
+ppo:
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+
+logging:
+  log_interval: 1000
+  save_interval: 10000
+
+tags:
+  - baseline_scheduler
+  - epsilon_fixed
+  - 50_percent_teacher
+  - cartpole
+  - group_02
+  - exp_002

@@ -27,7 +27,11 @@ try:
 except ImportError:
     TENSORBOARD_AVAILABLE = False
 
-# TODO: add W&B logging
+try:
+    import wandb
+    WANDB_AVAILABLE = True
+except ImportError:
+    WANDB_AVAILABLE = False
 
 class Logger:
     """Unified logger for training metrics.
@@ -41,8 +45,10 @@ class Logger:
         log_dir: str = "logs",
         use_mlflow: bool = False,
         use_tensorboard: bool = True,
+        use_wandb: bool = False,
         silence: bool = False,
         log_file: str = "training_metrics.txt",
+        wandb_config: dict = None,
     ) -> None:
         """Initialize logger.
 
@@ -97,6 +103,24 @@ class Logger:
                 "TensorBoard not installed. TensorBoard logging disabled."
             )
 
+        # W&B setup
+        self.use_wandb = use_wandb and WANDB_AVAILABLE
+        if self.use_wandb:
+            try:
+                wandb_config = wandb_config or {}
+                wandb.init(
+                    name=run_name,
+                    config=wandb_config,
+                    reinit=True
+                )
+            except Exception as e:
+                self.terminal_logger.warning(f"Failed to initialize W&B: {e}")
+                self.use_wandb = False
+        elif use_wandb and not WANDB_AVAILABLE:
+            self.terminal_logger.warning(
+                "W&B not installed. W&B logging disabled."
+            )
+
     def log_param(self, key: str, value: Any):
         """Log a parameter (hyperparameter, configuration, etc.).
 
@@ -109,6 +133,12 @@ class Logger:
                 mlflow.log_param(key, value)
             except Exception as e:
                 self.terminal_logger.debug(f"MLFlow log_param failed: {e}")
+
+        if self.use_wandb:
+            try:
+                wandb.config[key] = value
+            except Exception as e:
+                self.terminal_logger.debug(f"W&B log_param failed: {e}")
 
         if not self.silence:
             self.terminal_logger.info(f"{key}: {value}")
@@ -137,6 +167,12 @@ class Logger:
                 mlflow.log_metrics({metric_name: metric_value}, step=step)
             except Exception as e:
                 self.terminal_logger.debug(f"MLFlow log_metrics failed: {e}")
+
+        if self.use_wandb:
+            try:
+                wandb.log({metric_name: metric_value}, step=step if step >= 0 else None)
+            except Exception as e:
+                self.terminal_logger.debug(f"W&B log_metrics failed: {e}")
 
         if not self.silence:
             self.terminal_logger.info(
@@ -185,6 +221,12 @@ class Logger:
         if self.use_mlflow:
             try:
                 mlflow.end_run()
+            except Exception:
+                pass
+
+        if self.use_wandb:
+            try:
+                wandb.finish()
             except Exception:
                 pass
 

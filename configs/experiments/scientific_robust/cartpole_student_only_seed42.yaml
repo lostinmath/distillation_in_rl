@@ -1,0 +1,48 @@
+# Scientific Experiment: Student-Only Baseline (Seed 42)
+
+experiment:
+  name: "cartpole_student_only_seed42"
+  seed: 42
+  device: "cpu"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+
+algorithm:
+  name: "ppo"
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.0
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+
+scheduler:
+  name: "student_only"
+
+teacher: null
+
+training:
+  total_timesteps: 500000  # Ensure full convergence
+  eval_freq: 5000          # More frequent evaluation
+  checkpoint_freq: 50000
+  save_freq: 100000
+
+paths:
+  log_dir: "logs/scientific_robust/cartpole_student_only_seed42"
+  checkpoint_dir: "logs/scientific_robust/cartpole_student_only_seed42/checkpoints"
+  results_dir: "logs/scientific_robust/cartpole_student_only_seed42/results"
+
+tracker:
+  backends: ["tensorboard", "csv"]
+  tensorboard:
+    enabled: true
+  csv:
+    enabled: true
+  console:
+    enabled: false

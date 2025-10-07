@@ -17,8 +17,8 @@ This directory contains bash scripts to reproduce all experiments from the adapt
 ### 1. Baseline Comparison (`run_baseline_comparison.sh`)
 - **Purpose**: Compare all 7 scheduling strategies (main results)
 - **Runtime**: ~2-3 hours
-- **Strategies**: student_only, teacher_only, epsilon, epsilon_decreasing, interchangeably, teacher_then_student, reward_based
-- **Environments**: CartPole-v1, LunarLander-v2
+- **Strategies**: student_only, teacher_only, epsilon, epsilon_decreasing, alternating, teacher_then_student, reward_based
+- **Environments**: CartPole-v1, Acrobot-v1
 - **Seeds**: 3 different seeds for statistical significance
 
 ### 2. Hyperparameter Sensitivity (`run_hyperparameter_sensitivity.sh`)
@@ -49,7 +49,7 @@ results/
 │   │   ├── student_only/seed_42/
 │   │   ├── teacher_only/seed_42/
 │   │   └── reward_based/seed_42/
-│   └── lunarlander/...
+│   └── acrobot/...
 ├── hyperparameter_sensitivity_20241005_1630/
 └── ablation_study_20241005_1800/
 ```

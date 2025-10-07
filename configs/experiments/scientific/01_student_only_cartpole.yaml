@@ -1,0 +1,51 @@
+# Scientific Experiment 1: Student-Only Baseline (PPO)
+# Pure reinforcement learning without teacher guidance
+
+experiment:
+  name: "01_student_only_cartpole"
+  seed: 42
+  device: "cpu"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 8
+
+algorithm:
+  name: "ppo"
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.0
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+
+scheduler:
+  name: "student_only"
+
+# No teacher for baseline
+teacher: null
+
+training:
+  total_timesteps: 500000  # Enough to solve CartPole
+  eval_freq: 10000
+  checkpoint_freq: 50000
+  save_freq: 100000
+
+paths:
+  log_dir: "logs/scientific/01_student_only_cartpole"
+  checkpoint_dir: "logs/scientific/01_student_only_cartpole/checkpoints"
+  results_dir: "logs/scientific/01_student_only_cartpole/results"
+
+tracker:
+  backends: ["tensorboard", "csv", "console"]
+  tensorboard:
+    enabled: true
+  csv:
+    enabled: true
+  console:
+    enabled: true
+    verbose: true

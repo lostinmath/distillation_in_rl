@@ -1,0 +1,41 @@
+# Quick test experiment for dm_control integration
+
+experiment_name: "dm_control_cheetah_test"
+description: "Test dm_control integration with cheetah_run"
+
+# Use existing algorithm config
+algorithm: "ppo"
+
+# dm_control environment
+environment:
+  _target_: adaptive_rl.envs.dm_control_wrapper.create_dm_control_env
+  env_name: "cheetah_run"
+  flatten_obs: true
+
+# dm_control teacher
+teacher:
+  _target_: adaptive_rl.teachers.dm_control_teachers.create_dm_control_teacher
+  env_name: "cheetah_run"
+
+# Simple scheduler for testing
+scheduler:
+  _target_: adaptive_rl.schedulers.simple.TeacherOnlyScheduler
+
+# Quick test settings
+training:
+  total_steps: 5000
+  eval_episodes: 3
+  save_interval: 1000
+
+# Reduced batch size for quick testing
+batch_size: 256
+n_steps: 512
+
+# Tracking
+tracker:
+  _target_: adaptive_rl.trackers.csv_tracker.CSVTracker
+  log_dir: "logs/dm_control_test"
+
+# Seeds for reproducibility
+seed: 42
+torch_seed: 42

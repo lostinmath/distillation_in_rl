@@ -1,0 +1,20 @@
+# Configuration for PyBullet Ant environment
+
+_target_: adaptive_rl.envs.pybullet_wrapper.create_pybullet_env
+
+# Environment settings
+env_name: "ant"
+render_mode: null
+
+# Environment parameters
+max_episode_steps: 1000
+
+# For compatibility with existing pipeline
+env_type: "pybullet"
+action_type: "continuous"
+observation_type: "vector"
+
+# Wrapper settings
+normalize_obs: false
+normalize_rewards: false
+clip_actions: true

@@ -1,4 +1,5 @@
-# @package teacher
+# Optimal teacher policy (hand-coded)
 
-name: optimal
-_target_: distillation_rl.teachers.optimal.OptimalPolicy
+teacher:
+  name: "optimal"
+  _target_: "adaptive_rl.teachers.optimal.OptimalPolicy"

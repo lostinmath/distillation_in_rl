@@ -1,0 +1,15 @@
+# Configuration for MetaWorld reach teacher
+
+_target_: adaptive_rl.teachers.metaworld_teachers.create_metaworld_teacher
+
+# Teacher settings
+task_name: "reach"
+device: "cpu"
+
+# Teacher-specific parameters
+target_threshold: 0.05
+action_scale: 1.0
+
+# For compatibility
+teacher_type: "scripted"
+policy_path: null

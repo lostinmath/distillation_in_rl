@@ -69,6 +69,81 @@ class CartPoleOptimalTeacher(TeacherPolicy):
         return actions
 
 
+class AcrobotOptimalTeacher(TeacherPolicy):
+    """Energy-based policy for Acrobot-v1.
+
+    Uses a simple but effective strategy based on energy pumping.
+    """
+
+    def __init__(self, action_space=None, observation_space=None, device="cpu"):
+        """Initialize Acrobot optimal teacher."""
+        super().__init__(action_space, observation_space, device)
+
+    def act(self, obs: np.ndarray | torch.Tensor) -> np.ndarray | torch.Tensor:
+        """Generate actions using energy-based strategy for Acrobot.
+
+        Strategy: Pump energy when pendulum is moving in right direction.
+
+        Args:
+            obs: Acrobot observations [cos(θ1), sin(θ1), cos(θ2), sin(θ2), θ1_dot, θ2_dot]
+
+        Returns:
+            Actions (0=negative torque, 1=no torque, 2=positive torque)
+        """
+        # Convert to tensor if needed
+        if isinstance(obs, np.ndarray):
+            return_numpy = True
+            obs_tensor = torch.from_numpy(obs).float().to(self.device)
+        else:
+            return_numpy = False
+            obs_tensor = obs.float()
+
+        # Handle both single and batched observations
+        if len(obs_tensor.shape) == 1:
+            obs_tensor = obs_tensor.unsqueeze(0)
+            single_obs = True
+        else:
+            single_obs = False
+
+        # Extract state variables
+        cos_theta1 = obs_tensor[:, 0]
+        sin_theta1 = obs_tensor[:, 1]
+        cos_theta2 = obs_tensor[:, 2]
+        sin_theta2 = obs_tensor[:, 3]
+        theta1_dot = obs_tensor[:, 4]
+        theta2_dot = obs_tensor[:, 5]
+
+        # Compute angles from cos/sin
+        theta1 = torch.atan2(sin_theta1, cos_theta1)
+        theta2 = torch.atan2(sin_theta2, cos_theta2)
+
+        # Simple energy-based strategy
+        # When the second link is swinging up and has positive velocity, apply torque
+        # in the direction of motion to pump energy
+        actions = torch.ones(obs_tensor.size(0), dtype=torch.long, device=self.device)  # Default: no torque
+
+        # Apply positive torque when the tip is moving upward and in the right direction
+        tip_velocity_y = -1 * sin_theta1 * theta1_dot + torch.cos(theta1 + theta2) * (theta1_dot + theta2_dot)
+
+        # Pump energy when moving in beneficial direction
+        pump_condition = (tip_velocity_y > 0) & (torch.cos(theta1 + theta2) > -0.8)
+        actions[pump_condition] = 2  # Positive torque
+
+        # Apply negative torque in opposite conditions
+        brake_condition = (tip_velocity_y < 0) & (torch.cos(theta1 + theta2) > -0.8)
+        actions[brake_condition] = 0  # Negative torque
+
+        # Handle single observation
+        if single_obs:
+            actions = actions[0]
+
+        # Convert back to numpy if needed
+        if return_numpy:
+            actions = actions.cpu().numpy()
+
+        return actions
+
+
 class LunarLanderOptimalTeacher(TeacherPolicy):
     """Heuristic policy for LunarLander-v2.
 
@@ -184,6 +259,7 @@ class LunarLanderOptimalTeacher(TeacherPolicy):
 OPTIMAL_TEACHERS = {
     "CartPole-v1": CartPoleOptimalTeacher,
     "CartPole-v0": CartPoleOptimalTeacher,
+    "Acrobot-v1": AcrobotOptimalTeacher,
     "LunarLander-v2": LunarLanderOptimalTeacher,
     "LunarLander-v3": LunarLanderOptimalTeacher,
 }
@@ -209,4 +285,7 @@ def create_optimal_teacher(env_id: str, **kwargs) -> TeacherPolicy:
         )
 
     teacher_class = OPTIMAL_TEACHERS[env_id]
-    return teacher_class(**kwargs)
+    # Filter kwargs to only pass what the teacher constructor accepts
+    valid_kwargs = {k: v for k, v in kwargs.items()
+                   if k in ['action_space', 'observation_space', 'device']}
+    return teacher_class(**valid_kwargs)

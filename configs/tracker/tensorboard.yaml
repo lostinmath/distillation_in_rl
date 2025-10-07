@@ -2,9 +2,14 @@
 
 backends:
   - tensorboard
+  - console
+  - csv
 tensorboard:
   enabled: true
+  log_dir: ${paths.log_dir}/tensorboard
 console:
   enabled: true
+  verbose: true
 csv:
   enabled: true
+  log_dir: ${paths.log_dir}/csv

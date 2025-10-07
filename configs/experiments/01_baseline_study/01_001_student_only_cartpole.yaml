@@ -1,0 +1,37 @@
+# @package _global_
+# Experiment 01.001: Pure student learning baseline - CartPole
+# Group: 01 (Baseline Study), Experiment: 001, Environment: CartPole
+
+defaults:
+  - base_experiment
+  - environment: cartpole
+  - algorithm: ppo
+  - scheduler: student_only
+  - teacher: random  # Teacher not used but required for interface
+  - tracker: tensorboard
+
+experiment_id: "01_001"
+experiment_name: "01_001_student_only_cartpole"
+experiment_group: "01_baseline_study"
+experiment_description: "Pure student learning baseline to establish lower bound performance"
+
+seed: 42
+total_timesteps: 50000
+eval_frequency: 5000
+
+# Baseline hyperparameters
+ppo:
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+
+logging:
+  log_interval: 1000
+  save_interval: 10000
+
+tags:
+  - baseline
+  - student_only
+  - cartpole
+  - group_01
+  - exp_001

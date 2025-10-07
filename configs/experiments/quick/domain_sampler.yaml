@@ -1,0 +1,71 @@
+# Quick domain sampler experiment
+# Tests one representative environment from each domain
+
+experiment_name: "domain_sampler_quick"
+description: "Quick test of adaptive scheduling across different domains"
+
+# Use existing algorithm config
+algorithm: "ppo"
+
+# One representative from each major domain
+test_environments:
+  # Discrete control
+  "cartpole":
+    environment:
+      _target_: gym.make
+      id: "CartPole-v1"
+    teacher:
+      _target_: adaptive_rl.teachers.optimal.create_optimal_teacher
+      env_id: "CartPole-v1"
+
+  # Visual control
+  "atari_breakout":
+    environment:
+      _target_: adaptive_rl.envs.atari_wrapper.create_atari_env
+      env_name: "breakout"
+      obs_type: "ram"  # Use RAM for faster training
+    teacher:
+      _target_: adaptive_rl.teachers.atari_teachers.create_atari_teacher
+      env_name: "breakout"
+
+  # Continuous locomotion
+  "cheetah_run":
+    environment:
+      _target_: adaptive_rl.envs.dm_control_wrapper.create_dm_control_env
+      env_name: "cheetah_run"
+    teacher:
+      _target_: adaptive_rl.teachers.dm_control_teachers.create_dm_control_teacher
+      env_name: "cheetah_run"
+
+  # Manipulation
+  "metaworld_reach":
+    environment:
+      _target_: adaptive_rl.envs.metaworld_wrapper.create_metaworld_env
+      task_name: "reach"
+    teacher:
+      _target_: adaptive_rl.teachers.metaworld_teachers.create_metaworld_teacher
+      task_name: "reach"
+
+# Test key scheduling strategies
+schedulers:
+  - "student_only"
+  - "teacher_only"
+  - "reward_based"
+
+# Quick test settings
+training:
+  total_steps: 20000  # Quick test
+  eval_episodes: 3
+  save_interval: 5000
+
+# Reduced batch size for quick testing
+batch_size: 256
+n_steps: 512
+
+# Tracking
+tracker:
+  _target_: adaptive_rl.trackers.csv_tracker.CSVTracker
+  log_dir: "logs/domain_sampler_quick"
+
+# Single seed for quick testing
+seed: 42

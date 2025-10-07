@@ -1,4 +1,5 @@
-# @package scheduler
+# Student-only scheduling (pure PPO baseline)
 
-name: student_only
-_target_: distillation_rl.schedulers.simple.StudentOnlyScheduler
+scheduler:
+  name: "student_only"
+  _target_: "adaptive_rl.schedulers.simple.StudentOnlyScheduler"

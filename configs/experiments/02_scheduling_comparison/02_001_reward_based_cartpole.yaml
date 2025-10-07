@@ -1,0 +1,45 @@
+# @package _global_
+# Experiment 02.001: Reward-based adaptive scheduling - CartPole
+# Group: 02 (Scheduling Comparison), Experiment: 001, Environment: CartPole
+# MAIN CONTRIBUTION: Adaptive switching based on reward trend monitoring
+
+defaults:
+  - base_experiment
+  - environment: cartpole
+  - algorithm: ppo
+  - scheduler: reward_based
+  - teacher: optimal
+  - tracker: tensorboard
+
+experiment_id: "02_001"
+experiment_name: "02_001_reward_based_cartpole"
+experiment_group: "02_scheduling_comparison"
+experiment_description: "MAIN CONTRIBUTION: Reward-trend based adaptive teacher-student scheduling"
+
+seed: 42
+total_timesteps: 50000
+eval_frequency: 5000
+
+# Reward-based scheduler parameters
+scheduler:
+  trust_length: 5  # Steps to monitor before allowing switch
+  patience: 3      # Consecutive decreases needed to switch
+  min_performance_threshold: 0.1
+
+# Same base hyperparameters for fair comparison
+ppo:
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+
+logging:
+  log_interval: 1000
+  save_interval: 10000
+
+tags:
+  - main_contribution
+  - reward_based
+  - adaptive_scheduling
+  - cartpole
+  - group_02
+  - exp_001

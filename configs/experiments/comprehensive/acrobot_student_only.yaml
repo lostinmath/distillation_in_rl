@@ -1,0 +1,48 @@
+# Strategy 1: Student-Only (Pure PPO baseline) - Acrobot
+
+experiment:
+  name: "acrobot_student_only"
+  seed: 42
+  device: "cpu"
+
+environment:
+  env_id: "Acrobot-v1"
+  num_envs: 8
+
+algorithm:
+  name: "ppo"
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.0
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+
+scheduler:
+  name: "student_only"
+
+teacher: null
+
+training:
+  total_timesteps: 500000  # LunarLander needs more timesteps
+  eval_freq: 25000
+  checkpoint_freq: 100000
+  save_freq: 200000
+
+paths:
+  log_dir: "logs/comprehensive/lunarlander_student_only"
+  checkpoint_dir: "logs/comprehensive/lunarlander_student_only/checkpoints"
+  results_dir: "logs/comprehensive/lunarlander_student_only/results"
+
+tracker:
+  backends: ["tensorboard", "csv"]
+  tensorboard:
+    enabled: true
+  csv:
+    enabled: true
+  console:
+    enabled: false

@@ -1,0 +1,49 @@
+# Quick Test: Validate functionality before long experiments
+
+experiment:
+  name: "quick_test_cartpole"
+  seed: 42
+  device: "cpu"
+
+environment:
+  env_id: "CartPole-v1"
+  num_envs: 4  # Fewer environments for quick test
+
+algorithm:
+  name: "ppo"
+  learning_rate: 3e-4
+  n_steps: 128  # Smaller rollouts for speed
+  batch_size: 32
+  n_epochs: 5   # Fewer epochs
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.0
+  vf_coef: 0.5
+  max_grad_norm: 0.5
+
+scheduler:
+  name: "reward_based"
+  trust_period: 3  # Shorter for quick testing
+
+teacher:
+  name: "optimal"
+
+training:
+  total_timesteps: 10000  # Just 10k timesteps for quick validation
+  eval_freq: 2000
+  checkpoint_freq: 5000
+  save_freq: 10000
+
+paths:
+  log_dir: "logs/quick_test"
+  checkpoint_dir: "logs/quick_test/checkpoints"
+  results_dir: "logs/quick_test/results"
+
+tracker:
+  backends: ["console", "csv"]
+  console:
+    enabled: true
+    verbose: true
+  csv:
+    enabled: true

@@ -1,0 +1,11 @@
+# Configuration for Atari Breakout teacher
+
+_target_: adaptive_rl.teachers.atari_teachers.create_atari_teacher
+
+# Teacher settings
+env_name: "breakout"
+device: "cpu"
+
+# For compatibility
+teacher_type: "rule_based"
+policy_path: null

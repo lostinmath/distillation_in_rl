@@ -1,6 +1,8 @@
-# @package scheduler
+# Reward-based scheduling (MAIN CONTRIBUTION)
+# Adaptively switches between teacher and student based on performance trends
 
-name: reward_based
-_target_: distillation_rl.schedulers.reward_based.RewardBasedScheduler
-trust_period: 5
-initial_policy: teacher
+scheduler:
+  name: "reward_based"
+  _target_: "adaptive_rl.schedulers.reward_based.RewardBasedScheduler"
+  trust_period: 5  # Key parameter: wait this many steps before switching
+  performance_window: 3  # Look at this many recent rewards for trend

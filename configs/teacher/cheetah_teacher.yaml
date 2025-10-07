@@ -1,0 +1,16 @@
+# Configuration for cheetah_run teacher policy
+
+_target_: adaptive_rl.teachers.dm_control_teachers.create_dm_control_teacher
+
+# Teacher settings
+env_name: "cheetah_run"
+device: "cpu"
+
+# Teacher-specific parameters
+target_velocity: 10.0
+energy_efficiency: 0.8
+stability_factor: 0.5
+
+# For compatibility
+teacher_type: "hand_coded"
+policy_path: null

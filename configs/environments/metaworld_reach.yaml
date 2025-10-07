@@ -1,0 +1,20 @@
+# Configuration for MetaWorld reach task
+
+_target_: adaptive_rl.envs.metaworld_wrapper.create_metaworld_env
+
+# Environment settings
+task_name: "reach"
+seed: null
+
+# Environment parameters
+max_episode_steps: 500
+
+# For compatibility with existing pipeline
+env_type: "metaworld"
+action_type: "continuous"
+observation_type: "vector"
+
+# Wrapper settings
+normalize_obs: false
+normalize_rewards: false
+clip_actions: true

@@ -1,0 +1,14 @@
+# Configuration for PyBullet Ant teacher
+
+_target_: adaptive_rl.teachers.pybullet_teachers.create_pybullet_teacher
+
+# Teacher settings
+env_name: "ant"
+device: "cpu"
+
+# Teacher-specific parameters
+gait_frequency: 2.0
+
+# For compatibility
+teacher_type: "gait_based"
+policy_path: null

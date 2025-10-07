@@ -1,0 +1,31 @@
+# @package tracker
+
+backends:
+  - wandb
+  - tensorboard
+  - console
+  - csv
+
+wandb:
+  enabled: true
+  project: adaptive-rl-distillation
+  entity: null  # Will use default entity
+  group: ${experiment_name}
+  job_type: train
+  name: ${run_name}
+  tags:
+    - ${environment}
+    - ${scheduler.name}
+    - ${teacher.name}
+
+tensorboard:
+  enabled: true
+  log_dir: ${paths.log_dir}/tensorboard
+
+console:
+  enabled: true
+  verbose: true
+
+csv:
+  enabled: true
+  log_dir: ${paths.log_dir}/csv

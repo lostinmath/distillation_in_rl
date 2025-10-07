@@ -1,8 +1,5 @@
-# @package environment
+# LunarLander-v2 environment configuration
 
-name: lunarlander
-env_id: LunarLander-v2
-num_envs: 4
-max_episode_steps: 1000
-normalize_obs: false
-normalize_reward: false
+environment:
+  env_id: "LunarLander-v2"
+  num_envs: 8  # Parallel environments for faster training

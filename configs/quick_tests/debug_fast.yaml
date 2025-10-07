@@ -1,0 +1,38 @@
+# Quick debug configuration for testing
+# Minimal timesteps, logging, and complexity
+
+defaults:
+  - /algorithm: ppo
+  - /environment: cartpole
+  - /scheduler: student_only
+  - /teacher: optimal
+  - _self_
+
+experiment:
+  name: debug_fast_${scheduler.name}
+  seed: 42
+  device: cpu
+  num_seeds: 1
+
+environment:
+  num_envs: 2  # Small for quick test
+
+training:
+  total_timesteps: 1000  # Very small
+  eval_freq: 500
+  checkpoint_freq: 10000
+
+algorithm:
+  n_steps: 64   # Smaller rollouts
+  batch_size: 32
+  n_epochs: 2   # Fewer epochs
+
+tracker:
+  backends: ["console"]
+  console:
+    enabled: true
+    verbose: false
+
+paths:
+  log_dir: debug_logs/${experiment.name}
+  checkpoint_dir: ${paths.log_dir}/checkpoints

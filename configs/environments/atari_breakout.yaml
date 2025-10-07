@@ -1,0 +1,25 @@
+# Configuration for Atari Breakout environment
+
+_target_: adaptive_rl.envs.atari_wrapper.create_atari_env
+
+# Environment settings
+env_name: "breakout"
+obs_type: "rgb"  # or "ram" for RAM observations
+frame_stack: 4
+screen_size: 84
+grayscale_obs: true
+scale_obs: true
+
+# Environment parameters
+terminal_on_life_loss: true
+noop_max: 30
+frameskip: 4
+
+# For compatibility with existing pipeline
+env_type: "atari"
+action_type: "discrete"
+observation_type: "visual"
+
+# Visual preprocessing
+normalize_obs: false
+normalize_rewards: false

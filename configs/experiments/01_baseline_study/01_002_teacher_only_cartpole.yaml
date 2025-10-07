@@ -1,0 +1,38 @@
+# @package _global_
+# Experiment 01.002: Pure teacher guidance baseline - CartPole
+# Group: 01 (Baseline Study), Experiment: 002, Environment: CartPole
+
+defaults:
+  - base_experiment
+  - environment: cartpole
+  - algorithm: ppo
+  - scheduler: teacher_only
+  - teacher: optimal
+  - tracker: tensorboard
+
+experiment_id: "01_002"
+experiment_name: "01_002_teacher_only_cartpole"
+experiment_group: "01_baseline_study"
+experiment_description: "Pure teacher guidance to establish upper bound performance"
+
+seed: 42
+total_timesteps: 50000
+eval_frequency: 5000
+
+# Same hyperparameters as student baseline for fair comparison
+ppo:
+  learning_rate: 3e-4
+  n_steps: 2048
+  batch_size: 64
+
+logging:
+  log_interval: 1000
+  save_interval: 10000
+
+tags:
+  - baseline
+  - teacher_only
+  - upper_bound
+  - cartpole
+  - group_01
+  - exp_002

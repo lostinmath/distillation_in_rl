@@ -1,0 +1,102 @@
+# Ablation study experiment configuration
+# Tests different components of the adaptive scheduling system
+
+experiment_name: "ablation_study_comprehensive"
+description: "Systematic ablation of scheduling parameters and strategies"
+
+# Base environment for ablation (continuous control)
+base_environment:
+  _target_: adaptive_rl.envs.dm_control_wrapper.create_dm_control_env
+  env_name: "cheetah_run"
+
+base_teacher:
+  _target_: adaptive_rl.teachers.dm_control_teachers.create_dm_control_teacher
+  env_name: "cheetah_run"
+
+# Ablation dimensions
+ablations:
+  # Trust period ablation
+  trust_period:
+    - name: "trust_3"
+      scheduler:
+        _target_: adaptive_rl.schedulers.reward_based.RewardBasedScheduler
+        trust_period: 3
+    - name: "trust_5"
+      scheduler:
+        _target_: adaptive_rl.schedulers.reward_based.RewardBasedScheduler
+        trust_period: 5
+    - name: "trust_10"
+      scheduler:
+        _target_: adaptive_rl.schedulers.reward_based.RewardBasedScheduler
+        trust_period: 10
+    - name: "trust_20"
+      scheduler:
+        _target_: adaptive_rl.schedulers.reward_based.RewardBasedScheduler
+        trust_period: 20
+
+  # Epsilon scheduling ablation
+  epsilon_values:
+    - name: "eps_01"
+      scheduler:
+        _target_: adaptive_rl.schedulers.epsilon.EpsilonScheduler
+        epsilon: 0.1
+    - name: "eps_03"
+      scheduler:
+        _target_: adaptive_rl.schedulers.epsilon.EpsilonScheduler
+        epsilon: 0.3
+    - name: "eps_05"
+      scheduler:
+        _target_: adaptive_rl.schedulers.epsilon.EpsilonScheduler
+        epsilon: 0.5
+    - name: "eps_07"
+      scheduler:
+        _target_: adaptive_rl.schedulers.epsilon.EpsilonScheduler
+        epsilon: 0.7
+    - name: "eps_09"
+      scheduler:
+        _target_: adaptive_rl.schedulers.epsilon.EpsilonScheduler
+        epsilon: 0.9
+
+  # Scheduling frequency ablation
+  schedule_frequency:
+    - name: "freq_every_step"
+      scheduler_update_frequency: 1
+    - name: "freq_every_5"
+      scheduler_update_frequency: 5
+    - name: "freq_every_10"
+      scheduler_update_frequency: 10
+    - name: "freq_every_episode"
+      scheduler_update_frequency: -1  # Episode-based
+
+# Training settings for ablation
+training:
+  total_steps: 50000  # Sufficient for ablation
+  eval_episodes: 5
+  save_interval: 10000
+
+# Statistical rigor
+statistical:
+  num_seeds: 3  # Reduced for ablation
+  confidence_level: 0.95
+
+# Tracking
+tracker:
+  _target_: adaptive_rl.trackers.ablation_tracker.AblationTracker
+  log_dir: "logs/ablation_study"
+
+# Analysis settings
+analysis:
+  metrics:
+    - "sample_efficiency"
+    - "final_performance"
+    - "learning_stability"
+    - "teacher_usage_ratio"
+    - "switching_frequency"
+
+  statistical_tests:
+    - "anova"
+    - "tukey_hsd"
+    - "effect_size"
+
+# Seeds for reproducibility
+seeds: [42, 123, 456]

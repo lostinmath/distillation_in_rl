@@ -1,0 +1,59 @@
+# Base experiment configuration
+# All experiments inherit these defaults
+
+# Default components
+defaults:
+  - environment: cartpole
+  - algorithm: ppo
+  - scheduler: student_only
+  - teacher: optimal
+  - tracker: tensorboard
+  - hydra/job_logging: default
+  - hydra/hydra_logging: default
+
+# Experiment metadata
+experiment_id: null          # Format: {group}_{experiment} (e.g., "01_001")
+experiment_name: null        # Full name with description (e.g., "01_001_student_only_cartpole")
+experiment_group: null       # Group name (e.g., "01_baseline_study")
+experiment_description: null # Human-readable description
+author: "Margarita Piscenco"
+created_date: null     # Auto-generated
+
+# Training parameters
+seed: 42
+total_timesteps: 50000
+eval_frequency: 5000
+eval_episodes: 10
+
+# Logging and saving
+logging:
+  log_interval: 1000
+  save_interval: 10000
+  log_level: "INFO"
+
+# Output directories
+paths:
+  output_dir: ${hydra:runtime.output_dir}
+  log_dir: ${paths.output_dir}/logs
+  model_dir: ${paths.output_dir}/models
+  results_dir: ${paths.output_dir}/results
+
+# Default tags
+tags:
+  - thesis_experiment
+  - distillation_rl
+
+# Reproducibility
+deterministic: true
+benchmark: false  # Set to true for performance benchmarking
+
+# Multi-run configuration for statistical validation
+hydra:
+  job:
+    name: ${experiment_name}
+    chdir: true
+  run:
+    dir: results/${experiment_group}/${experiment_name}/${now:%Y%m%d_%H%M%S}_seed${seed}
+  sweep:
+    dir: results/${experiment_group}/${experiment_name}
+    subdir: seed${seed}

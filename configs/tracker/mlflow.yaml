@@ -1,0 +1,30 @@
+# @package tracker
+
+backends:
+  - mlflow
+  - tensorboard
+  - console
+  - csv
+
+mlflow:
+  enabled: true
+  experiment_name: adaptive-rl-distillation
+  tracking_uri: null  # Will use default local tracking
+  run_name: ${run_name}
+  tags:
+    environment: ${environment}
+    scheduler: ${scheduler.name}
+    teacher: ${teacher.name}
+    algorithm: ppo
+
+tensorboard:
+  enabled: true
+  log_dir: ${paths.log_dir}/tensorboard
+
+console:
+  enabled: true
+  verbose: true
+
+csv:
+  enabled: true
+  log_dir: ${paths.log_dir}/csv

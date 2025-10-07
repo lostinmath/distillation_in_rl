@@ -11,6 +11,7 @@ from .base import TeacherPolicy
 from .optimal import (
     OPTIMAL_TEACHERS,
     CartPoleOptimalTeacher,
+    AcrobotOptimalTeacher,
     LunarLanderOptimalTeacher,
     create_optimal_teacher,
 )
@@ -77,6 +78,7 @@ def create_teacher(
 __all__ = [
     "TEACHER_TYPES",
     "CartPoleOptimalTeacher",
+    "AcrobotOptimalTeacher",
     "LunarLanderOptimalTeacher",
     "PretrainedPPOTeacher",
     "RandomTeacher",

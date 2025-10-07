@@ -1,0 +1,14 @@
+# Configuration for MuJoCo HalfCheetah teacher
+
+_target_: adaptive_rl.teachers.mujoco_teachers.create_mujoco_teacher
+
+# Teacher settings
+env_name: "halfcheetah"
+device: "cpu"
+
+# Teacher-specific parameters
+gait_frequency: 2.0
+
+# For compatibility
+teacher_type: "gait_based"
+policy_path: null

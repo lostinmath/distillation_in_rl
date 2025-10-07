@@ -1,0 +1,17 @@
+# Base experiment configuration
+
+experiment:
+  name: "base_experiment"
+  seed: 42
+  device: "cpu"
+
+training:
+  total_timesteps: 1000000
+  eval_freq: 10000
+  checkpoint_freq: 50000
+  save_freq: 100000
+
+paths:
+  log_dir: "logs"
+  checkpoint_dir: "checkpoints"
+  results_dir: "results"
