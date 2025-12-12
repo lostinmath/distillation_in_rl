@@ -1,3 +1,7 @@
-from adaptive_rl.envs.make_env import make_vec_env
+"""Environment management and wrappers."""
 
-__all__ = ["make_vec_env"]
+from adaptive_rl.envs.factory import create_env
+
+__all__ = [
+    "create_env",
+]

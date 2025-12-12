@@ -1,0 +1,6 @@
+cartpole_student_only,Student-Only Baseline,195.80,19,Tue Oct  7 12:24:58 PM CEST 2025
+cartpole_teacher_only,Teacher-Only Upper Bound,500.00,12,Tue Oct  7 12:25:10 PM CEST 2025
+cartpole_reward_based,Reward-Based (Main Contribution),91.60,12,Tue Oct  7 12:25:22 PM CEST 2025
+cartpole_epsilon,Fixed Epsilon (50%),299.60,17,Tue Oct  7 12:25:39 PM CEST 2025
+cartpole_epsilon_decreasing,Decreasing Epsilon,471.20,14,Tue Oct  7 12:25:53 PM CEST 2025
+cartpole_interchangeably,Interchangeably,200.80,18,Tue Oct  7 12:26:11 PM CEST 2025

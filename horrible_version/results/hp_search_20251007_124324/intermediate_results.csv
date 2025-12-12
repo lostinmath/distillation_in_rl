@@ -1,0 +1,2 @@
+experiment_id,final_performance,duration,success,trust_period,performance_window,switch_threshold,learning_rate,n_steps,batch_size,total_timesteps
+0,0.0,1.0806341171264648,False,12,3,0.1,0.0003,2048,128,150000

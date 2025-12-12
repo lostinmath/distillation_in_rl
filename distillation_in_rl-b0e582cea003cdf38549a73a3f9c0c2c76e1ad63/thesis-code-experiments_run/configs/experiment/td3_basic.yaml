@@ -1,0 +1,44 @@
+# @package _global_
+defaults:
+  - _self_
+
+env_type: mani_skill
+env_config:
+  obs_mode: rgb
+  control_mode: pd_ee_delta_pose
+  render_mode: rgb_array
+  sim_backend: gpu
+  reward_mode: dense
+  env_id: PickCube-v1
+  num_envs: 32
+  num_steps: 50
+  include_state: false
+  partial_reset: true
+  image_height: 256
+  image_width: 256
+  use_render_camera_as_input: False
+  use_only_rgb: True
+
+scheduler_config:
+  scheduling_strategy: internal_only
+
+device: cuda
+
+evaluate: true
+eval_freq: 1_000_000 
+save_train_videos: true
+save_eval_videos: true
+save_train_video_freq: 1_000_000
+ckpt_save_frequency: 100_000
+
+model_type: td3
+path_to_loaded_model: null
+
+model_config:
+  exp_name: 002_experiment_td3_basic_10M
+  seed: 13
+
+  num_envs: ${env_config.num_envs}
+
+  total_timesteps: 10_000_000
+  learning_rate: 0.0003

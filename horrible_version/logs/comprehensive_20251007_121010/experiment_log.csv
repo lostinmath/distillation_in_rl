@@ -1,0 +1,8 @@
+experiment_name,config_file,status,duration_seconds
+Student-Only (PPO Baseline),configs/experiments/comprehensive/cartpole_student_only.yaml,success,19
+Teacher-Only (Optimal Policy),configs/experiments/comprehensive/cartpole_teacher_only.yaml,success,13
+Fixed Epsilon (50/50),configs/experiments/comprehensive/cartpole_epsilon.yaml,success,19
+Decreasing Epsilon,configs/experiments/comprehensive/cartpole_epsilon_decreasing.yaml,success,14
+Interchangeably,configs/experiments/comprehensive/cartpole_interchangeably.yaml,success,20
+Teacher-then-Student,configs/experiments/comprehensive/cartpole_teacher_then_student.yaml,success,19
+🎯 Reward-Based (MAIN CONTRIBUTION),configs/experiments/comprehensive/cartpole_reward_based.yaml,success,13

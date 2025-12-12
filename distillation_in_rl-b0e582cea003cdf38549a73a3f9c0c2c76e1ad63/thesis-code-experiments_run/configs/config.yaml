@@ -1,0 +1,35 @@
+defaults:
+  - _self_
+  # colored logs for more readability
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+  - override hydra/sweeper: optuna
+  
+
+hydra:
+      run:
+          dir: logs/${model_config.exp_name}/${now:%Y-%m-%d-%H-%M-%S}
+
+
+####################### General Configs #######################
+
+###################### Env Configs ###########################
+
+env_type: "mani_skill"
+
+env_config:
+    obs_mode: "rgb"
+    control_mode: "pd_ee_delta_pose"
+    render_mode: "rgb_array"
+    sim_backend: "gpu"  # "cpu" # "gpu"
+    reward_mode: "dense"
+    env_id: "PickCube-v1"
+    # """the id of the environment"""
+    num_envs: 1 # 32
+    # """the number of parallel environments"""
+    num_steps: 50
+    include_state: False
+    partial_reset: True
+    image_height: 256
+    image_width: 256
+    use_render_camera_as_input: False

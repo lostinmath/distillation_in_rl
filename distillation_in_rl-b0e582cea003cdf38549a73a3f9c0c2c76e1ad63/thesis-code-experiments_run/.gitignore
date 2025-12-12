@@ -1,0 +1,30 @@
+data/*
+demos/*
+imgui.ini
+*.mp4
+*.h5
+*.json
+*.tar.gz
+
+*.pyc
+*.log
+
+# builds
+dist/*
+
+#hydra outputs
+outputs/*
+
+prev_code/demos/*
+demos/*
+
+
+octoplus/runs/*
+
+# notebooks to be ignored
+# *.ipynb
+# I do reward analysis there, so better to keep them
+
+# mlflow logs
+octoplus/mlruns/*
+mlruns/*

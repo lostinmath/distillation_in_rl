@@ -1,0 +1,63 @@
+defaults:
+  - _self_
+  # colored logs for more readability
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
+
+
+####################### General Configs #######################
+train: True
+eval: True
+display_sample: True
+
+###################### Env Configs ###########################
+
+env_type: "mani_skill"
+env_config:
+    obs_mode: "rgb"
+    control_mode: "pd_joint_delta_pos"
+
+####################### Devices Configs #######################
+device: cuda
+
+####################### Model Configs #######################
+model_type: ppo_rgb
+
+model_config:
+  exp_name: "PlugCharger-v1-001"
+  seed:  1
+  capture_video: True
+  # """whether to capture videos of the agent performances (check out `videos` folder)"""
+  save_model: True
+  #"""whether to save model into the `runs/{run_name}` folder"""
+  evaluate: False
+  #"""if toggled, only runs evaluation with the given model checkpoint and saves the evaluation trajectories"""
+
+  render_mode: "all"
+  #"""the environment rendering mode"""
+
+  # Algorithm specific arguments
+  env_id: "RollBall-v1" # PlugCharger-v1 # "PushCube-v1"
+  # """the id of the environment"""
+  include_state: True
+  # """whether to include state information in observations"""
+
+  # num_iterations = self.total_timesteps // self.batch_size
+  total_timesteps: 2_000_000 #500_000 # 250_000  # 10000000
+  # """total timesteps of the experiments"""
+
+  learning_rate: 3e-4
+
+  # batch_size = self.num_envs * self.num_steps
+  #"""the learning rate of the optimizer"""
+  num_envs: 4 # 32 # 128 #  256  # 512
+  #"""the number of parallel environments"""
+  num_eval_envs:  4 # 8
+  #"""the number of parallel evaluation environments"""
+  partial_reset: True
+
+  # basically max len of each run
+  #"""whether to let parallel environments reset upon termination instead of truncation"""
+  num_steps: 100 # 20  # 50
+  #""the number of steps to run in each environment per policy rollout"""
+  num_eval_steps: 100

@@ -1,0 +1,2 @@
+python -m mani_skill.utils.download_demo "PushCube-v1"
+python -m mani_skill.trajectory.replay_trajectory   --traj-path /home/piscenco/.maniskill/demos/PushCube-v1/motionplanning/trajectory.h5   --record-rewards --reward-mode="normalized_dense" -o rgb   --use-env-states   --save-traj
